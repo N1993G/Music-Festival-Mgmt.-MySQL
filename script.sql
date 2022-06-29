@@ -1,3 +1,5 @@
+-- CREATING A RELATIONAL DATABASE FOR EXAMPLE OF FESTIVAL MANAGEMENT
+-- SET PRIMARY AND FOREIGN KEY CONSTRAINTS TO CREATE RELATIONS BETWEEN TABLES
 CREATE DATABASE Festival;
 USE Festival;
 
@@ -597,7 +599,7 @@ ADD CONSTRAINT fk_Artist_Set_ID FOREIGN KEY (Artist_Set_ID) REFERENCES Set_timin
 ALTER TABLE Artist
 ADD CONSTRAINT fk_Artist_Stage_ID FOREIGN KEY (Artist_Stage_ID) REFERENCES Stage(Stage_ID);
 
--- Next section joins the booking reference to the ticket type and customer information
+-- USING ANY TYPE OF JOIN CREATE A VIEW THAT COMBINES MULTIPLE TABLES IN A LOGICAL WAY
 SELECT C_NAME AS Customer_Name,
   C_SURNAME AS Customer_Surname,
   T_access AS Ticket_Type,
@@ -606,7 +608,7 @@ FROM Booking Bo
   JOIN Ticket Tic ON Bo.B_Customer_ID = Tic.T_Customer_ID
   JOIN Customer C ON C_ID = Tic.T_Customer_ID;
   
--- Then there is a stored function to check whether customers have access to stage 4
+-- CREATE A STORED FUNCTION WHICH SHOWS WHICH TICKET TYPE HAS ACCESS TO STAGE 4
 DELIMITER / / 
 CREATE FUNCTION Stage4_access (T_access VARCHAR(50)) RETURNS VARCHAR(50) DETERMINISTIC BEGIN
 DECLARE Stage4_access VARCHAR(50);
@@ -619,14 +621,14 @@ SET Stage4_access = "DENIED";
 END IF;
 RETURN (Stage4_access);
 END / / 
--- Applying a query which uses this stored function
+-- APPLYING A QUERY THAT USES THE STORED FUNCTION TO VIEW ACCESS LEVELS
 SELECT c.C_Name,
   STAGE4_ACCESS(T_access)
 FROM ticket t
   JOIN customer c ON t.t_customer_ID = c.C_Id
 ORDER BY c.C_Surname; 
 
--- Find all staff that are near Spotify's location
+-- PREPARE A QUERY WITH A SUBQUERY TO DEMO HOW TO EXTRACT DATA FROM THE DB FOR ANALYSIS, SUCH AS WHICH STAFF ARE LOCATED NEAR SPOTIFY VENDOR
 SELECT staff_name, staff_surname
 FROM staff
 WHERE staff_stage_id 
@@ -634,7 +636,7 @@ IN (SELECT vendor_stage_id
 FROM vendor
 WHERE vendor_name = 'Spotify');
 
--- store procedure 1 this procedure adds staff 
+-- CREATE STORED PROCEDURE TO ADD STAFF MEMBERS MORE EFFICIENTLY
   DELIMITER / / 
   CREATE PROCEDURE AddStaff(
     IN Staff_ID INT,
@@ -658,9 +660,10 @@ VALUES (
     Staff_Stage_ID
   );
 END / / 
+-- DEMO HOW THIS STORED PROCEDURE RUNS ADDING NEW STAFF MEMBER EFFICIENTLY
 CALL AddStaff (21, 'Graham', 'Hooper', '07700900021', 3);
 
--- store procedure 2 It is the procedure that makes ticket booking and customer addition at the same time in order to make booking for customers that are not added in the database.
+-- CREATE STORED PROCEDURE TO ADD NEW BOOKING FOR CUSTOMER ADDING DATA TO MULTIPLE TABLES EFFICIENTLY
 DELIMITER / / 
 CREATE PROCEDURE Addbookingfornewcustomer(
   IN B_ID Varchar(50),
@@ -710,6 +713,7 @@ VALUES (
     B_Price
   );
 END / /
+-- DEMO STORED PROCEDURE TO ADD NEW CUSTOMER TO MULTIPLE TABLES EFFICIENTLY
 CALL Addbookingfornewcustomer (
   'B021',
   21,
@@ -729,7 +733,7 @@ CALL Addbookingfornewcustomer (
   'Standart'
 );
 
--- Trigger When we want to delete a customer from the database, the booking of that person will be deleted with this trigger.
+-- CREATE A TRIGGER THAT WILL DELETE CUSTOMER DETAILS FROM THE CUSTOMER TABLE ASWELL AS THE BOOKING TABLE
 DELIMITER / / 
 CREATE TRIGGER customer_before_Delete Before DELETE on customer FOR EACH ROW BEGIN
 SET FOREIGN_KEY_CHECKS=0;
@@ -737,6 +741,7 @@ Delete from booking
 where B_Customer_ID = old.c_ID;
 SET FOREIGN_KEY_CHECKS=1;
 END / /
+-- DEMO HOW IT RUNS EFFICIENTLY
 SHOW TRIGGERS;
 DELETE FROM customer 
 WHERE c_id = 21;
