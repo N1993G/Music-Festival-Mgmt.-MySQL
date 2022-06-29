@@ -10,4 +10,4 @@
 - Create a trigger and demo how it runs
 - Create an event and demo how it runs
 - Create a view that uses 3-4 base tables: prepare and demo a query that uses the view to produce a logically arranged result set for analysis
-- Crepare an example query with group by and having, to demo how to extract data from your db for analysis
+- Prepare an example query with group by and having, to demo how to extract data from your db for analysis
